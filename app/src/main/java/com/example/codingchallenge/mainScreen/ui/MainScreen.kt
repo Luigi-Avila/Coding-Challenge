@@ -1,8 +1,10 @@
 package com.example.codingchallenge.mainScreen.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,6 +70,7 @@ fun Home(mainScreenViewModel: MainScreenViewModel) {
 
 @Composable
 fun ListCharacters(mainScreenViewModel: MainScreenViewModel) {
+    val showButtons: Boolean by mainScreenViewModel.showButtons.observeAsState(initial = false)
     Column {
         LazyColumn(
             modifier = Modifier.weight(1f),
@@ -78,7 +82,22 @@ fun ListCharacters(mainScreenViewModel: MainScreenViewModel) {
             }
         }
 
-        ButtonCallAPI(Modifier.align(Alignment.CenterHorizontally), mainScreenViewModel)
+        if (showButtons) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                ButtonCallAPI(Modifier.padding(10.dp), mainScreenViewModel)
+                ButtonResetList(Modifier.padding(10.dp), mainScreenViewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun ButtonResetList(modifier: Modifier, mainScreenViewModel: MainScreenViewModel) {
+    Button(onClick = { mainScreenViewModel.getCharacters() }, modifier = modifier) {
+        Text(text = "RESET LIST")
     }
 }
 
@@ -99,7 +118,12 @@ fun CharacterItem(character: CharacterResponseItem) {
                 contentScale = ContentScale.Fit,
                 contentDescription = "Character image"
             )
-            Text(text = character.quote , fontSize = 18.sp, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
+            Text(
+                text = character.quote,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(16.dp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -117,6 +141,9 @@ fun Header(mainScreenViewModel: MainScreenViewModel) {
         }, modifier = Modifier
             .fillMaxWidth(),
         singleLine = true,
-        maxLines = 1
+        maxLines = 1,
+        keyboardActions = KeyboardActions(
+            onDone = { mainScreenViewModel.getCharacter() }
+        )
     )
 }

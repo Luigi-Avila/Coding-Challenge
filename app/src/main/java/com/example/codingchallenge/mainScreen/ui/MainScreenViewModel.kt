@@ -17,8 +17,7 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getCharacterUseCase: GetCharacterUseCase
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _character = MutableLiveData<String>()
     val character: LiveData<String> = _character
@@ -29,8 +28,12 @@ class MainScreenViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _showButtons = MutableLiveData<Boolean>()
+    val showButtons: LiveData<Boolean> = _showButtons
+
     fun onCharacterChange(character: String) {
         _character.value = character
+        _showButtons.value = _character.value.toString().isNotEmpty()
     }
 
     fun getCharacters() {
