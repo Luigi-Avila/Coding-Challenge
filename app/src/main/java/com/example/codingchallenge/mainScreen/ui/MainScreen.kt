@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -32,9 +32,9 @@ fun Preview() {
 @Composable
 fun MainScreen(mainScreenViewModel: MainScreenViewModel) {
 
-    LaunchedEffect(Unit, block = {
+    LaunchedEffect(key1 = true) {
         mainScreenViewModel.getCharacters()
-    })
+    }
 
     val isLoading: Boolean by mainScreenViewModel.isLoading.observeAsState(initial = true)
 
@@ -70,7 +70,8 @@ fun ListCharacters(mainScreenViewModel: MainScreenViewModel) {
     Column {
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
         ) {
             items(mainScreenViewModel.characterList) { character ->
                 CharacterItem(character)
@@ -98,7 +99,7 @@ fun CharacterItem(character: CharacterResponseItem) {
                 contentScale = ContentScale.Fit,
                 contentDescription = "Character image"
             )
-            Text(text = character.quote , fontSize = 18.sp, modifier = Modifier.padding(16.dp))
+            Text(text = character.quote , fontSize = 18.sp, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
         }
     }
 }
@@ -114,8 +115,8 @@ fun Header(mainScreenViewModel: MainScreenViewModel) {
                 text = "Enter your favorite character"
             )
         }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White)
+            .fillMaxWidth(),
+        singleLine = true,
+        maxLines = 1
     )
 }
