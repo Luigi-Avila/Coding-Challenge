@@ -1,27 +1,24 @@
 package com.example.codingchallenge.mainScreen.data.network
 
 import android.util.Log
-import com.example.codingchallenge.core.network.RetrofitHelper
-import com.example.codingchallenge.mainScreen.data.models.CharacterResponse
 import com.example.codingchallenge.mainScreen.data.models.CharacterResponseItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Response
+import javax.inject.Inject
 
-class CharacterService {
-    private val retrofit = RetrofitHelper.getRetrofit()
+class CharacterService @Inject constructor(private val characterClient: CharacterClient) {
 
     suspend fun getCharacters(count: Int): List<CharacterResponseItem>{
         return withContext(Dispatchers.IO){
-           val response = retrofit.create(CharacterClient::class.java).getCharacters(count)
+           val response = characterClient.getCharacters(count)
             Log.i("response", "${response.body()}")
             response.body() ?: emptyList()
         }
     }
 
-    suspend fun getCharacter(character: String): List<CharacterResponseItem>{
+    suspend fun getCharacter(count: Int, character: String): List<CharacterResponseItem>{
         return withContext(Dispatchers.IO){
-            val response = retrofit.create(CharacterClient::class.java).getCharacter(character)
+            val response = characterClient.getCharacter(count, character)
             Log.i("response", "${response.body()}")
             response.body() ?: emptyList()
         }

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -31,16 +32,28 @@ fun Preview() {
 @Composable
 fun MainScreen(mainScreenViewModel: MainScreenViewModel) {
 
-    LaunchedEffect(Unit, block= {
+    LaunchedEffect(Unit, block = {
         mainScreenViewModel.getCharacters()
     })
+
+    val isLoading: Boolean by mainScreenViewModel.isLoading.observeAsState(initial = true)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Home(mainScreenViewModel)
+        if (isLoading) {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Home(mainScreenViewModel)
+        }
     }
 }
 
@@ -57,9 +70,9 @@ fun ListCharacters(mainScreenViewModel: MainScreenViewModel) {
     Column {
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(mainScreenViewModel.characterList){ character ->
+            items(mainScreenViewModel.characterList) { character ->
                 CharacterItem(character)
             }
         }
@@ -77,17 +90,15 @@ fun ButtonCallAPI(modifier: Modifier, mainScreenViewModel: MainScreenViewModel) 
 
 @Composable
 fun CharacterItem(character: CharacterResponseItem) {
-    Card(Modifier.fillMaxWidth(), elevation = 25.dp, shape = MaterialTheme.shapes.small) {
+    Card(Modifier.fillMaxWidth(), elevation = 22.dp, shape = MaterialTheme.shapes.small) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            /*Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "Character image"
-            ) */
             AsyncImage(
                 model = character.image,
+                modifier = Modifier.size(150.dp),
+                contentScale = ContentScale.Fit,
                 contentDescription = "Character image"
             )
-            Text(text = character.character, fontSize = 28.sp, modifier = Modifier.padding(16.dp))
+            Text(text = character.quote , fontSize = 18.sp, modifier = Modifier.padding(16.dp))
         }
     }
 }

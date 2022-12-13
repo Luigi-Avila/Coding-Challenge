@@ -11,5 +11,8 @@ interface CharacterClient {
     suspend fun getCharacters(@Query("count") count: Int): Response<CharacterResponse>
 
     @GET("/quotes")
-    suspend fun getCharacter(@Query("character") character: String): Response<CharacterResponse>
+    suspend fun getCharacter(
+        @Query("count") count: Int,
+        @Query("character") character: String
+    ): Response<CharacterResponse>
 }
