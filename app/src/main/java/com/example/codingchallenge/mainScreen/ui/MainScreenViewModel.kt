@@ -40,6 +40,7 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             val result = getCharactersUseCase()
+            _characterList.clear()
             _characterList.addAll(result)
             Log.i("Result", "$result")
             _isLoading.value = false
