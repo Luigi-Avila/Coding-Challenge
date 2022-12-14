@@ -1,6 +1,5 @@
 package com.example.codingchallenge.mainScreen.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,13 +69,14 @@ fun Home(mainScreenViewModel: MainScreenViewModel) {
 @Composable
 fun ListCharacters(mainScreenViewModel: MainScreenViewModel) {
     val showButtons: Boolean by mainScreenViewModel.showButtons.observeAsState(initial = false)
+    val characterList: List<CharacterResponseItem> by mainScreenViewModel.characterList.observeAsState(initial = emptyList())
     Column {
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
         ) {
-            items(mainScreenViewModel.characterList) { character ->
+            items(characterList) { character ->
                 CharacterItem(character)
             }
         }
@@ -103,7 +102,7 @@ fun ButtonResetList(modifier: Modifier, mainScreenViewModel: MainScreenViewModel
 
 @Composable
 fun ButtonCallAPI(modifier: Modifier, mainScreenViewModel: MainScreenViewModel) {
-    Button(onClick = { mainScreenViewModel.getCharacter() }, modifier = modifier) {
+    Button(onClick = { mainScreenViewModel.getCharacter(character = mainScreenViewModel.character.toString()) }, modifier = modifier) {
         Text(text = "CALL API")
     }
 }
@@ -143,7 +142,7 @@ fun Header(mainScreenViewModel: MainScreenViewModel) {
         singleLine = true,
         maxLines = 1,
         keyboardActions = KeyboardActions(
-            onDone = { mainScreenViewModel.getCharacter() }
+            onDone = { mainScreenViewModel.getCharacter(character) }
         )
     )
 }

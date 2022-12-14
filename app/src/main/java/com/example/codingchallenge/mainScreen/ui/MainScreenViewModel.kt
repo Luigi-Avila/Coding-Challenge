@@ -1,7 +1,5 @@
 package com.example.codingchallenge.mainScreen.ui
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,8 +20,8 @@ class MainScreenViewModel @Inject constructor(
     private val _character = MutableLiveData<String>()
     val character: LiveData<String> = _character
 
-    private val _characterList = mutableStateListOf<CharacterResponseItem>()
-    val characterList: List<CharacterResponseItem> = _characterList
+    private val _characterList = MutableLiveData<List<CharacterResponseItem>>()
+    val characterList: LiveData<List<CharacterResponseItem>> = _characterList
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -40,21 +38,20 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             val result = getCharactersUseCase()
-            _characterList.clear()
-            _characterList.addAll(result)
-            Log.i("Result", "$result")
+            _characterList.value = emptyList()
+            _characterList.postValue(result)
             _isLoading.value = false
         }
     }
 
-    fun getCharacter() {
+    fun getCharacter(character: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = getCharacterUseCase(_character.value.toString())
-            _characterList.clear()
-            Log.i("Result", "Clear list")
-            _characterList.addAll(result)
-            Log.i("Result", "$result")
+            val result = getCharacterUseCase(character = character)
+            if (result.isNotEmpty()){
+                _characterList.value = emptyList()
+                _characterList.postValue(result)
+            }
             _isLoading.value = false
         }
     }
